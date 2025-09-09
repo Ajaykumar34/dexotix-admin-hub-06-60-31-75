@@ -16,11 +16,9 @@ import { usePublicEvents, isEventPast } from '@/hooks/usePublicEvents';
 import { useCategories } from '@/hooks/useCategories';
 import { useSubcategories } from '@/hooks/useSubcategories';
 import { useVenues } from '@/hooks/useVenues';
-import { useSEO, seoConfigs } from '@/hooks/useSEO';
+
 
 const Events = () => {
-  // Apply SEO configuration
-  useSEO(seoConfigs.events);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCity, setSelectedCity] = useState(() => {

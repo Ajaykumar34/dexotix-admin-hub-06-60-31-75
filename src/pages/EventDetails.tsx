@@ -14,7 +14,7 @@ import BookMyShowStyleBooking from "@/components/BookMyShowStyleBooking";
 import GeneralAdmissionBookingInterface from "@/components/GeneralAdmissionBookingInterface";
 
 import { checkAndUpdateSeatMapSoldOutStatus } from "@/utils/seatMapSoldOutUtils";
-import DynamicEventSEO from "@/components/DynamicEventSEO";
+
 
 interface Artist {
   name: string;
@@ -413,7 +413,6 @@ const EventDetails = () => {
   if (event?.is_recurring) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <DynamicEventSEO event={event} />
         <header className="bg-white shadow-sm border-b">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
@@ -469,7 +468,7 @@ const EventDetails = () => {
   // For non-recurring events, always use seat map layout (no general admission option)
   return (
     <div className="min-h-screen bg-gray-50">
-      <DynamicEventSEO event={event} />
+      
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">

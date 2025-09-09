@@ -10,7 +10,7 @@ import { ArrowLeft, Mail, Phone, MapPin, Send, Clock, MessageCircle } from 'luci
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import Navbar from '@/components/Navbar';
-import { useSEO } from '@/hooks/useSEO';
+
 
 
 const ContactUs = () => {
@@ -42,12 +42,6 @@ const ContactUs = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  // Apply SEO configuration
-  useSEO({
-    title: 'Contact Us - Get Support | TicketooZ',
-    description: 'Get in touch with TicketooZ support team. Contact us for booking assistance, technical support, partnerships or general inquiries.',
-    keywords: 'contact TicketooZ, customer support, help, technical support, partnerships, contact information'
-  });
 
   return (
     <div className="min-h-screen bg-gray-50">

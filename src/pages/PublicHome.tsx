@@ -13,7 +13,7 @@ import CookieConsentPopup from '@/components/CookieConsentPopup';
 import { usePopularEvents, useRegularEvents, useUpcomingEvents, useNonRecurringEvents, isEventSaleEnded, isEventPast } from '@/hooks/usePublicEvents';
 import { useCategories } from '@/hooks/useCategories';
 import { useAuth } from '@/hooks/useAuth';
-import { useSEO, seoConfigs } from '@/hooks/useSEO';
+
 
 const PublicHome = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -37,8 +37,6 @@ const PublicHome = () => {
 
   const { user, loading: authLoading } = useAuth();
 
-  // Apply comprehensive SEO configuration
-  useSEO(seoConfigs.home);
 
   const { events: popularEvents, loading: popularLoading } = usePopularEvents();
   const { events: regularEvents, loading: regularLoading } = useRegularEvents();

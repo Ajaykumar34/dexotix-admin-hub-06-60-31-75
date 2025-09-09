@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { Calendar, MapPin, IndianRupee, CreditCard, Ticket } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useSEO, seoConfigs } from '@/hooks/useSEO';
+
 import { supabase } from '@/integrations/supabase/client';
 import { format, isValid } from 'date-fns';
 

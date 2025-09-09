@@ -16,7 +16,7 @@ import { sendOTP } from '@/utils/otpUtils';
 import { createUserAccount } from '@/utils/authUtils';
 import OTPVerification from '@/components/auth/OTPVerification';
 import { supabase } from '@/integrations/supabase/client';
-import { useSEO, seoConfigs } from '@/hooks/useSEO';
+
 
 const INDIAN_STATES = [
   'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa', 'Gujarat', 
@@ -28,8 +28,6 @@ const INDIAN_STATES = [
 ];
 
 const Register = () => {
-  // Apply SEO configuration
-  useSEO(seoConfigs.register);
 
   // Account Details
   const [firstName, setFirstName] = useState('');

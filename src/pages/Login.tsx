@@ -8,7 +8,7 @@ import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm';
-import { useSEO, seoConfigs } from '@/hooks/useSEO';
+
 
 
 const Login = () => {
@@ -21,8 +21,6 @@ const Login = () => {
   const navigate = useNavigate();
   const { signIn } = useAuth();
 
-  // Apply SEO configuration
-  useSEO(seoConfigs.login);
 
 
   // Helper function to detect if input is email or mobile

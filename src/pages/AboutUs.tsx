@@ -4,16 +4,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, Users, Target, Award, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
-import { useSEO } from '@/hooks/useSEO';
+
 
 
 const AboutUs = () => {
-  // Apply SEO configuration
-  useSEO({
-    title: 'About TicketooZ - Your Entertainment Gateway | India\'s Premier Drama, Concert & Sports Ticket Booking Platform',
-    description: 'Learn about TicketooZ - Your Entertainment Gateway. India\'s trusted platform for booking drama, concert, sports, comedy and entertainment event tickets across the country.',
-    keywords: 'about TicketooZ, entertainment gateway, event booking platform, company information, our mission, team, event discovery, drama tickets, concert tickets, sports tickets, comedy tickets, entertainment tickets, theatre tickets, dance performance tickets'
-  });
 
   return (
     <div className="min-h-screen bg-gray-50">
