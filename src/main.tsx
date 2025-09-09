@@ -1,3 +1,4 @@
+// Force rebuild after SEO removal
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
