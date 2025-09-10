@@ -1,7 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
-
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -26,10 +24,23 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Sending block notification to:', userEmail);
 
-    const emailResponse = await resend.emails.send({
-      from: "Dexotix Support <noreply@dexotix.com>",
-      to: [userEmail],
-      subject: "Account Access Blocked - Dexotix",
+    // Initialize SMTP client for Amazon SES
+    const client = new SMTPClient({
+      connection: {
+        hostname: "email-smtp.ap-south-1.amazonaws.com",
+        port: 587,
+        tls: true,
+        auth: {
+          username: "AKIAUA477MZUKWDTENV3",
+          password: "BO52KMeYKx4EwbhX5qEsu2DXhIHFpp2mNyiFU+5hO16x",
+        },
+      },
+    });
+
+    await client.send({
+      from: "auth-noreply@ticketooz.com",
+      to: userEmail,
+      subject: "Account Access Blocked - Ticketooz",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
@@ -44,7 +55,7 @@ const handler = async (req: Request): Promise<Response> => {
           
           <p>Dear ${userName || 'User'},</p>
           
-          <p>We are writing to inform you that your account access on Dexotix has been temporarily blocked.</p>
+          <p>We are writing to inform you that your account access on Ticketooz has been temporarily blocked.</p>
           
           ${reason ? `
             <div style="background-color: #f9fafb; border-left: 4px solid #6b7280; padding: 15px; margin: 20px 0;">
@@ -58,7 +69,7 @@ const handler = async (req: Request): Promise<Response> => {
           <div style="background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 20px; margin: 20px 0;">
             <h3 style="margin: 0 0 10px 0; color: #1e40af;">Contact Support</h3>
             <p style="margin: 0;">
-              Email: <a href="mailto:help@dexotix.com" style="color: #2563eb;">help@dexotix.com</a><br>
+              Email: <a href="mailto:help@ticketooz.com" style="color: #2563eb;">help@ticketooz.com</a><br>
               Please include your email address and any relevant details when contacting support.
             </p>
           </div>
@@ -67,7 +78,7 @@ const handler = async (req: Request): Promise<Response> => {
           
           <div style="border-top: 1px solid #e5e7eb; margin-top: 30px; padding-top: 20px; text-align: center; color: #6b7280; font-size: 14px;">
             <p style="margin: 0;">
-              This is an automated message from Dexotix.<br>
+              This is an automated message from Ticketooz.<br>
               Please do not reply to this email.
             </p>
           </div>
@@ -75,9 +86,11 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    console.log("Block notification email sent successfully:", emailResponse);
+    await client.close();
 
-    return new Response(JSON.stringify({ success: true, emailResponse }), {
+    console.log("Block notification email sent successfully");
+
+    return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: {
         "Content-Type": "application/json",

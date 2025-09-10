@@ -1,7 +1,7 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.3';
-import { Resend } from "npm:resend@2.0.0";
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -56,26 +56,33 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('OTP stored in database successfully');
 
-    // Initialize Resend
-    const resendApiKey = Deno.env.get('RESEND_API_KEY');
-    if (!resendApiKey) {
-      console.error('Resend API key not found');
-      throw new Error('Resend API key not configured');
-    }
+    // Initialize SMTP client for Amazon SES
+    const client = new SMTPClient({
+      connection: {
+        hostname: "email-smtp.ap-south-1.amazonaws.com",
+        port: 587,
+        tls: true,
+        auth: {
+          username: "AKIAUA477MZUKWDTENV3",
+          password: "BO52KMeYKx4EwbhX5qEsu2DXhIHFpp2mNyiFU+5hO16x",
+        },
+      },
+    });
 
-    const resend = new Resend(resendApiKey);
+    console.log('Sending email via Amazon SES...', { to: email, subject: getSubjectByPurpose(purpose) });
 
-    console.log('Sending email via Resend...', { to: email, subject: getSubjectByPurpose(purpose) });
-
-    // Send email using Resend
-    const emailResponse = await resend.emails.send({
-      from: 'Dexotix Events <register@dexotix.com>',
-      to: [email],
+    // Send email using Amazon SES SMTP
+    await client.send({
+      from: "auth-noreply@ticketooz.com",
+      to: email,
       subject: getSubjectByPurpose(purpose),
+      content: getEmailTemplate(otpCode, purpose),
       html: getEmailTemplate(otpCode, purpose),
     });
 
-    console.log('Email sent successfully via Resend:', emailResponse);
+    await client.close();
+
+    console.log('Email sent successfully via Amazon SES');
 
     return new Response(
       JSON.stringify({ success: true, message: 'OTP sent successfully' }),
@@ -103,13 +110,13 @@ const handler = async (req: Request): Promise<Response> => {
 function getSubjectByPurpose(purpose: string): string {
   switch (purpose) {
     case 'registration':
-      return 'Verify Your Email - Dexotix Events';
+      return 'Verify Your Email - Ticketooz';
     case 'password_reset':
-      return 'Reset Your Password - Dexotix Events';
+      return 'Reset Your Password - Ticketooz';
     case 'email_change':
-      return 'Verify Your New Email - Dexotix Events';
+      return 'Verify Your New Email - Ticketooz';
     default:
-      return 'Verification Code - Dexotix Events';
+      return 'Verification Code - Ticketooz';
   }
 }
 
@@ -123,7 +130,7 @@ function getEmailTemplate(otpCode: string, purpose: string): string {
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
       <div style="text-align: center; margin-bottom: 30px;">
-        <h1 style="color: #4F46E5; font-size: 28px; margin: 0;">Dexotix Events</h1>
+        <h1 style="color: #4F46E5; font-size: 28px; margin: 0;">Ticketooz</h1>
       </div>
       
       <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 30px; text-align: center; color: white; margin-bottom: 30px;">
@@ -139,7 +146,7 @@ function getEmailTemplate(otpCode: string, purpose: string): string {
       </div>
       
       <div style="text-align: center; color: #666; font-size: 12px;">
-        <p>© 2024 Dexotix Events. All rights reserved.</p>
+        <p>© 2024 Ticketooz. All rights reserved.</p>
       </div>
     </div>
   `;
