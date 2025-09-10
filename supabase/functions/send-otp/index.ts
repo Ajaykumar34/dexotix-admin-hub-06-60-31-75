@@ -69,19 +69,28 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
 
-    console.log('Sending email via Amazon SES...');
+    console.log('Sending email via Amazon SES...', { to: email, subject: getSubjectByPurpose(purpose) });
 
-    // Send email using Amazon SES SMTP
-    await client.send({
-      from: "auth-noreply@ticketooz.com",
-      to: email,
-      subject: getSubjectByPurpose(purpose),
-      html: getEmailTemplate(otpCode, purpose),
-    });
+    try {
+      // Send email using Amazon SES SMTP
+      await client.send({
+        from: "auth-noreply@ticketooz.com",
+        to: email,
+        subject: getSubjectByPurpose(purpose),
+        html: getEmailTemplate(otpCode, purpose),
+      });
 
-    await client.close();
-
-    console.log('Email sent successfully via Amazon SES');
+      console.log('Email sent successfully via Amazon SES');
+    } catch (smtpError: any) {
+      console.error('SMTP Error:', smtpError);
+      throw new Error(`Failed to send email: ${smtpError.message}`);
+    } finally {
+      try {
+        await client.close();
+      } catch (closeError) {
+        console.error('Error closing SMTP client:', closeError);
+      }
+    }
 
     return new Response(
       JSON.stringify({ success: true, message: 'OTP sent successfully' }),
