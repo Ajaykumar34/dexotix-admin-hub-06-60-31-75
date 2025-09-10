@@ -69,14 +69,13 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
 
-    console.log('Sending email via Amazon SES...', { to: email, subject: getSubjectByPurpose(purpose) });
+    console.log('Sending email via Amazon SES...');
 
     // Send email using Amazon SES SMTP
     await client.send({
       from: "auth-noreply@ticketooz.com",
       to: email,
       subject: getSubjectByPurpose(purpose),
-      content: getEmailTemplate(otpCode, purpose),
       html: getEmailTemplate(otpCode, purpose),
     });
 
