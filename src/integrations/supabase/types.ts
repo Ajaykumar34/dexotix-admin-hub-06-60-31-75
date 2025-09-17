@@ -1807,54 +1807,15 @@ export type Database = {
               p_limit?: number
             }
         Returns: {
-          artist_image: string | null
-          artist_name: string | null
-          artists: Json | null
           category: string
-          category_id: string | null
-          city: string | null
-          created_at: string | null
-          description: string | null
-          duration: number | null
-          end_date: string | null
-          end_datetime: string
-          event_expiry_minutes: number | null
-          event_id_display: string | null
-          event_images: string | null
-          event_logo: string | null
-          event_tags: string | null
-          event_time: string | null
-          "events.tags": Json | null
-          formatted_event_id: string | null
-          genre: string | null
-          genres: Json | null
+          description: string
           id: string
-          is_active: boolean | null
-          is_featured: boolean | null
-          is_recurring: boolean | null
-          is_regular: boolean | null
-          is_sold_out: boolean | null
-          language: string | null
-          layout_type: string | null
           name: string
-          poster: string | null
-          recurrence_end_date: string | null
-          recurrence_type: string | null
-          sale_end: string
-          sale_start: string
-          seat_map: Json | null
-          seat_map_config: Json | null
-          sold_out_at: string | null
-          start_date: string | null
+          poster: string
           start_datetime: string
-          state: string | null
-          status: string | null
-          sub_category: string | null
-          tags: string | null
-          terms_and_conditions: string | null
-          updated_at: string | null
-          venue: string | null
-          venue_id: string | null
+          sub_category: string
+          venue_city: string
+          venue_name: string
         }[]
       }
       get_subcategories_by_category: {
