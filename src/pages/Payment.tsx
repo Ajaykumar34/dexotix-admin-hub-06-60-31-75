@@ -42,6 +42,7 @@ const Payment = () => {
   
   const [processing, setProcessing] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'upi' | 'card'>('upi');
+  const [paymentGateway, setPaymentGateway] = useState<'razorpay' | 'phonepe'>('razorpay');
   const [paymentSummary, setPaymentSummary] = useState<any>(null);
 
   // Prevent access if not coming from booking flow
@@ -553,10 +554,55 @@ const Payment = () => {
         console.error('[PhonePe Payment] Profile update error:', profileError);
       }
 
-      // For now, redirect to Razorpay as PhonePe integration requires additional setup
-      // TODO: Implement actual PhonePe gateway integration
-      console.log('[PhonePe Payment] Using Razorpay for UPI payments...');
-      await handleRazorpayPayment();
+      // Create PhonePe payment order
+      const { data: orderData, error: orderError } = await supabase.functions.invoke('phonepe-create-order', {
+        body: {
+          amount: totalPrice,
+          eventId: event.id,
+          customerInfo,
+        }
+      });
+
+      if (orderError) {
+        throw new Error(orderError.message || 'Failed to create PhonePe payment order');
+      }
+
+      if (!orderData.success) {
+        throw new Error(orderData.message || 'PhonePe order creation failed');
+      }
+
+      console.log('[PhonePe Payment] PhonePe order created:', orderData.merchantTransactionId);
+
+      // Redirect to PhonePe payment page
+      if (orderData.data?.instrumentResponse?.redirectInfo?.url) {
+        // Store booking data in localStorage for verification after redirect
+        const bookingEventDate = eventDate || event.start_datetime;
+        
+        const bookingDataForStorage = {
+          event_id: event.id,
+          event_occurrence_id: eventOccurrenceId,
+          occurrence_ticket_category_id: selectedGeneralTickets?.[0]?.categoryId || null,
+          customer_name: `${customerInfo.firstName} ${customerInfo.lastName}`,
+          customer_email: customerInfo.email,
+          customer_phone: customerInfo.phone,
+          customer_state: customerInfo.state,
+          customer_address: customerInfo.address,
+          total_price: totalPrice,
+          quantity: actualTicketCount,
+          seat_numbers: selectedSeats || [],
+          selectedGeneralTickets: selectedGeneralTickets || [],
+          convenience_fee: convenienceFee || 0,
+          merchantTransactionId: orderData.merchantTransactionId,
+          eventDate: bookingEventDate,
+        };
+
+        localStorage.setItem('pendingPhonePeBooking', JSON.stringify(bookingDataForStorage));
+        
+        // Redirect to PhonePe
+        window.location.href = orderData.data.instrumentResponse.redirectInfo.url;
+      } else {
+        throw new Error('PhonePe redirect URL not received');
+      }
 
     } catch (error: any) {
       console.error('PhonePe payment error:', error);

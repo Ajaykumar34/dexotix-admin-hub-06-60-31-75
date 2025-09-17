@@ -27,6 +27,7 @@ import BookingSuccess from "./pages/BookingSuccess";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyTicket from "./pages/VerifyTicket";
 import CreateAdmin from "./pages/CreateAdmin";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 
 const queryClient = new QueryClient();
@@ -47,6 +48,7 @@ const App = () => (
             <Route path="/event/:id" element={<EventDetails />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/payment" element={<Payment />} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/booking-success" element={<BookingSuccess />} />
             <Route path="/dashboard" element={<UserDashboard />} />
             <Route path="/profile" element={<CustomerProfile />} />
